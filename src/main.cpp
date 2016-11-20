@@ -9,6 +9,8 @@
 
 #include "optionparser.h"
 
+#include "utils.h"
+
 
 struct Arg: public option::Arg
 {
@@ -114,11 +116,32 @@ int main(int argc, char** argv)
 		}
 	}
 
+	// setting up the patterns
+	std::vector<std::string> patterns;
+	if (pattern_file != "")
+	{
+		try
+		{
+			patterns = utils::getPatterns(pattern_file);
+		}
+		catch (const std::exception& e)
+		{
+			std::cerr << "Could not read the patterns file! Error:\n" << e.what() << std::endl;
+			return 1;
+		}
+	}
+	else {
+		patterns.push_back(pattern);
+	}
+
 	std::cout << "Operation: " << operation << std::endl;
 	std::cout << "Count: " << count << std::endl;
 	std::cout << "Report: " << report << std::endl;
-	std::cout << "Pattern: " << pattern << std::endl;
-	std::cout << "Pattern File: " << pattern_file << std::endl;
+	std::cout << "Patterns: " << std::endl;
+	for(std::vector<std::string>::iterator it = patterns.begin(); it != patterns.end(); it++)
+	{
+		std::cout << *it << std::endl;
+	}
 	std::cout << "Input File: " << input_file << std::endl;
 	
 	/*if (count)
