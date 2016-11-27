@@ -9,7 +9,8 @@
 
 #include "optionparser.h"
 
-#include "suffix_array.h"
+#include "indexer.h"
+#include "searcher.h"
 #include "utils.h"
 
 
@@ -138,7 +139,7 @@ int main(int argc, char** argv)
 		patterns.push_back(pattern);
 	}
 
-	std::cout << "Operation: " << operation << std::endl;
+/*	std::cout << "Operation: " << operation << std::endl;
 	std::cout << "Count: " << count << std::endl;
 	std::cout << "Report: " << report << std::endl;
 	std::cout << "Patterns: " << std::endl;
@@ -146,36 +147,25 @@ int main(int argc, char** argv)
 	{
 		std::cout << *it << std::endl;
 	}
-	std::cout << "Input File: " << input_file << std::endl;
+	std::cout << "Input File: " << input_file << std::endl;*/
 
 	if (operation == INDEX_OP)
 	{
-		std::ifstream file(input_file);
-		std::string line;
-
-		if(file.fail()){
-      throw std::runtime_error("Text file does not exist!");
-    }
-
-		while (std::getline(file, line))
-		{
-		  // create SA for `line`
-		  // TODO: add runtime collection
-		  std::vector<int> sa = suffix_array::getSuffixArray(line);
-		}
-
-		file.close();
+		indexer::create_index(input_file);
 	}
 	else if (operation == SEARCH_OP)
 	{
-		if (count)
-		{
+		//// TODO: CONSIDER COUNT
+		// if (count)
+		// {
 
-		}
-		else
-		{
+		// }
+		// else
+		// {
 			
-		}
+		// }
+
+		std::map<int, std::vector<int>> occurrences = searcher::search_index(input_file, patterns);
 	}
 	
 	return 0;
