@@ -9,6 +9,7 @@
 
 #include "optionparser.h"
 
+#include "suffix_array.h"
 #include "utils.h"
 
 
@@ -39,6 +40,9 @@ const option::Descriptor usage[] =
 	{REPORT_RUNTIME,0,    "r",   "report-runtime",  option::Arg::None, "--report-runtime,-r\t Write to a csv file the runtime of pattern on each file."},
 	{0,0,0,0,0,0}
 };
+
+std::string INDEX_OP = "index";
+std::string SEARCH_OP = "search";
 
 int main(int argc, char** argv)
 {
@@ -82,7 +86,7 @@ int main(int argc, char** argv)
 	else {
 		operation = parse.nonOption(0);
 
-		if (operation == "index")
+		if (operation == INDEX_OP)
 		{
 			if (parse.nonOptionsCount() > 1)
 			{
@@ -94,7 +98,7 @@ int main(int argc, char** argv)
  				return 1;
 			}
 		}
-		else if (operation == "search") {
+		else if (operation == SEARCH_OP) {
 			if (parse.nonOptionsCount() > 2)
 			{
 				pattern = parse.nonOption(1);
@@ -143,100 +147,36 @@ int main(int argc, char** argv)
 		std::cout << *it << std::endl;
 	}
 	std::cout << "Input File: " << input_file << std::endl;
+
+	if (operation == INDEX_OP)
+	{
+		std::ifstream file(input_file);
+		std::string line;
+
+		if(file.fail()){
+      throw std::runtime_error("Text file does not exist!");
+    }
+
+		while (std::getline(file, line))
+		{
+		  // create SA for `line`
+		  // TODO: add runtime collection
+		  std::vector<int> sa = suffix_array::getSuffixArray(line);
+		}
+
+		file.close();
+	}
+	else if (operation == SEARCH_OP)
+	{
+		if (count)
+		{
+
+		}
+		else
+		{
+			
+		}
+	}
 	
-	/*if (count)
-	{
-		int file_occs = 0;
-		int single_file_occs = 0;
-		for (std::vector<std::string>::iterator tf = text_files.begin(); tf < text_files.end(); tf++)
-		{
-			file_occs = 0;
-			for (std::vector<std::string>::iterator pat = patterns.begin(); pat < patterns.end(); pat++)
-			{
-				if (report) report_start = std::chrono::high_resolution_clock::now();
-				single_file_occs = search_function(*tf, *pat, edit).size();
-				file_occs += single_file_occs;
-				if (report)
-				{
-					report_end = std::chrono::high_resolution_clock::now();
-
-					report_line.str("");
-					report_line.clear();
-
-					report_line << pat->length() << "," ;
-					report_line << edit << ",";
-					report_line << single_file_occs << ",";
-					report_line <<  std::chrono::duration_cast<std::chrono::nanoseconds>(report_end - report_start).count() << std::endl;
-
-					runtimes.push_back(report_line.str());
-				}
-			}
-			if (file_occs > 0)
-			{
-				std::cout << *tf << ":" << file_occs << std::endl;
-			}
-		}
-	}
-	else
-	{
-		std::map<int, bool> lines_to_print;
-		for (std::vector<std::string>::iterator tf = text_files.begin(); tf < text_files.end(); tf++)
-		{
-			lines_to_print.clear();
-			for (std::vector<std::string>::iterator pat = patterns.begin(); pat < patterns.end(); pat++)
-			{
-				if (report) report_start = std::chrono::high_resolution_clock::now();
-				std::vector<data::PatternOccurrence> results = search_function(*tf, *pat, edit);
-				if (report)
-				{
-					report_end = std::chrono::high_resolution_clock::now();
-
-					report_line.str("");
-					report_line.clear();
-
-					report_line << pat->length() << "," ;
-					report_line << edit << ",";
-					report_line << results.size() << ",";
-					report_line <<  std::chrono::duration_cast<std::chrono::nanoseconds>(report_end - report_start).count() << std::endl;
-
-					runtimes.push_back(report_line.str());
-				}
-
-				for (std::vector<data::PatternOccurrence>::iterator it2 = results.begin(); it2 < results.end(); it2++)
-				{
-					data::PatternOccurrence occ = *it2;
-					if (lines_to_print.count(occ.line) == 0)	// first time printing this line
-					{
-						lines_to_print[occ.line] = true;
-					}
-				}
-			}
-
-			// print the actual lines
-			std::ifstream file(*tf);
-			std::string line;
-			int line_count = 0;
-			while (std::getline(file, line))
-			{
-				// print this line
-				if (lines_to_print.count(line_count) != 0) std::cout << line << std::endl;
-				line_count++;
-			}
-		}
-	}
-
-	if (report)
-	{
-		std::ofstream out("runtime.csv");
-		out << "pattern_size,edit_distance,matches,runtime" << std::endl;
-
-		for (std::vector<std::string>::iterator it = runtimes.begin(); it != runtimes.end(); it++)
-		{
-			out << *it;
-		}
-
-		out.close();
-	}
-*/
 	return 0;
 }
