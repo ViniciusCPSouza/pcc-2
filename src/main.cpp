@@ -139,15 +139,15 @@ int main(int argc, char** argv)
 		patterns.push_back(pattern);
 	}
 
-/*	std::cout << "Operation: " << operation << std::endl;
-	std::cout << "Count: " << count << std::endl;
-	std::cout << "Report: " << report << std::endl;
-	std::cout << "Patterns: " << std::endl;
-	for(std::vector<std::string>::iterator it = patterns.begin(); it != patterns.end(); it++)
-	{
-		std::cout << *it << std::endl;
-	}
-	std::cout << "Input File: " << input_file << std::endl;*/
+	// std::cout << "Operation: " << operation << std::endl;
+	// std::cout << "Count: " << count << std::endl;
+	// std::cout << "Report: " << report << std::endl;
+	// std::cout << "Patterns: " << std::endl;
+	// for(std::vector<std::string>::iterator it = patterns.begin(); it != patterns.end(); it++)
+	// {
+	// 	std::cout << *it << std::endl;
+	// }
+	// std::cout << "Input File: " << input_file << std::endl;
 
 	if (operation == INDEX_OP)
 	{
@@ -155,17 +155,25 @@ int main(int argc, char** argv)
 	}
 	else if (operation == SEARCH_OP)
 	{
-		//// TODO: CONSIDER COUNT
-		// if (count)
-		// {
+		std::map<int, searcher::LineResult> occurrences = searcher::search_index(input_file, patterns);
 
-		// }
-		// else
-		// {
-			
-		// }
-
-		std::map<int, std::vector<int>> occurrences = searcher::search_index(input_file, patterns);
+		// TODO: CONSIDER COUNT
+		if (count)
+		{
+			int sum = 0;
+			for(std::map<int, searcher::LineResult>::iterator it = occurrences.begin(); it != occurrences.end(); it++)
+			{
+				sum += it->second.occurrences.size();
+			}
+			std::cout << sum << std::endl;
+		}
+		else
+		{
+			for(std::map<int, searcher::LineResult>::iterator it = occurrences.begin(); it != occurrences.end(); it++)
+			{
+				if (it->second.occurrences.size() > 0) std::cout << it->second.line << std::endl;
+			}	
+		}
 	}
 	
 	return 0;

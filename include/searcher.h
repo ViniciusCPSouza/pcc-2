@@ -10,9 +10,16 @@
 
 namespace searcher
 {
-	std::map<int, std::vector<int>> search_index(std::string index_file, std::vector<std::string> patterns);
+	struct LineResult
+	{
+		std::string line;
+		std::vector<int> occurrences;		
+	};
+
+	std::map<int, LineResult> search_index(std::string index_file, std::vector<std::string> patterns);
 	std::vector<int> get_suffix_array(std::string file_line);
-	std::vector<int> search(std::string text, std::vector<int> sa);
+	std::vector<int> search(std::string text, std::vector<int> sa, std::string pattern);
+	int compare(std::string pattern, std::string text, int offset);
 }
 
 #endif
