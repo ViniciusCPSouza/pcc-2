@@ -162,11 +162,6 @@ int main(int argc, char** argv)
 		  // create SA for `line`
 		  // TODO: add runtime collection
 		  std::vector<int> sa = suffix_array::getSuffixArray(line);
-		 	for (std::vector<int>::iterator it = sa.begin(); it != sa.end(); it++)
-		 	{
-		 		std::cout << *it << ",";
-		 	}
-		 	std::cout << std::endl;
 		}
 
 		file.close();
