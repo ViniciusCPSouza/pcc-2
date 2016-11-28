@@ -157,7 +157,6 @@ int main(int argc, char** argv)
 	{
 		std::map<int, searcher::LineResult> occurrences = searcher::search_index(input_file, patterns);
 
-		// TODO: CONSIDER COUNT
 		if (count)
 		{
 			int sum = 0;

@@ -1,5 +1,8 @@
 #include <indexer.h>
 
+// TODO: REMOOOOOOOOOOOVE
+#include <iostream>
+
 
 namespace indexer
 {
@@ -30,6 +33,27 @@ namespace indexer
 		  std::vector<int> sa = suffix_array::getSuffixArray(line);
 		  output << get_sa_string(sa) << std::endl;
 		  output << line << std::endl;
+
+		  std::cout << "==========================" << std::endl;
+		  std::vector<int> lzw_sa = lzw::compress_string(get_sa_string(sa));
+		  std::vector<int> lzw_line = lzw::compress_string(line);
+
+		  for(std::vector<int>::iterator it = lzw_sa.begin(); it!= lzw_sa.end(); it++)
+		  {
+		  	std::cout << *it << " ";
+		  }
+		  std::cout << std::endl;
+		  std::cout << lzw::decompress_code(lzw_sa) << std::endl;
+
+		  std::cout << "---" << std::endl;
+
+		  for(std::vector<int>::iterator it = lzw_line.begin(); it!= lzw_line.end(); it++)
+		  {
+		  	std::cout << *it << " ";
+		  }
+		  std::cout << std::endl;
+		  std::cout << lzw::decompress_code(lzw_line) << std::endl;
+		  std::cout << "==========================" << std::endl;
 		}
 
 		input.close();

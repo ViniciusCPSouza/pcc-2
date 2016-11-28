@@ -6,6 +6,7 @@
 #include <sstream>
 #include <vector>
 
+#include <lzw.h>
 #include <suffix_array.h>
 
 namespace indexer
