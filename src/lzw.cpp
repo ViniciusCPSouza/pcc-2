@@ -5,57 +5,55 @@ namespace lzw
 {
 	std::vector<int> compress_string(std::string input)
 	{
-		std::map<std::string, int> dict;
 		std::vector<int> output;
 		int N = input.length();
-		int next_code = 256;
 
+		// empty string -> empty compression
 		if (N == 0) return output;
 
-		// init the dictionary with the ASCII chars
-		for (int i = 0; i < 256; i++) dict[std::string(1, i)] = i;
-
-		// iterate over the string characters
-		std::string phrase = std::string(input, 0, 1);
+		std::map<std::string, int> dict;
 		char current_char;
+		std::string phrase = std::string(input, 0, 1);;
+		std::string phrase_sum;
+		int code = 256;
+
 		for (int c = 1; c < N; c++)
 		{
 			current_char = input[c];
-
-			// the new phrase already has a proper code
+			// the new phrase exists in the dict
 			if (dict.find(phrase + current_char) != dict.end())
 			{
 				phrase += current_char;
 			}
+			// the new phrase still does not exist 
 			else
 			{
-				output.push_back(dict[phrase]);
-				dict[phrase + current_char] = next_code;
-				next_code++;
+				output.push_back(phrase.length() > 1 ? dict[phrase] : phrase[0]);
+				dict[phrase + current_char] = code;
+				code++;
 				phrase = std::string(1, current_char);
 			}
 		}
 
-		// push the last code
-		output.push_back(dict[phrase]);
+		output.push_back(phrase.length() > 1 ? dict[phrase] : phrase[0]);
 
 		return output;
 	}
 
 	std::string decompress_code(std::vector<int> input)
 	{
-		std::map<int, std::string> dict;
 		std::ostringstream output;
 		int N = input.size();
-		int next_code = 256;
-
+		
+		// empty input -> empty decompressed string
 		if (N == 0) return "";
 
-		int current_char = input[0];
-		output << (char) current_char;
-
+		std::map<int, std::string> dict;
+		char current_char = (char) input[0];
 		std::string old_phrase = std::string(1, current_char);
 		std::string phrase;
+		output << current_char;
+		int code = 256;
 		int current_code;
 
 		for (int c = 1; c < N; c++)
@@ -68,23 +66,24 @@ namespace lzw
 			}
 			else
 			{
-				if (dict.find('_' + current_code) != dict.end())
+				// the code was already mapped
+				if (dict.find(current_code) != dict.end())
 				{
-					phrase = dict['_' + current_code];
+					phrase = dict[current_code];
 				}
 				else
 				{
-					phrase = old_phrase + std::string(1, current_char);
+					phrase = old_phrase + current_char;
 				}
-
-				output << phrase;
-				current_char = phrase[0];
-				dict['_' + next_code] = old_phrase + std::string(1, current_char);
-        next_code++;
-        old_phrase = phrase;
 			}
+
+			output << phrase;
+			current_char = phrase[0];
+			dict[code] = old_phrase + current_char;
+			code++;
+			old_phrase = phrase;
 		}
-		
+
 		return output.str();
 	}
 }
