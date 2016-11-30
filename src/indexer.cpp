@@ -30,9 +30,6 @@ namespace indexer
 		  std::vector<int> sa = suffix_array::getSuffixArray(line);
 		  output << get_sa_string(sa) << std::endl;
 		  output << line << std::endl;
-
-		  std::vector<int> lzw_sa = lzw::compress_string(get_sa_string(sa));
-		  std::vector<int> lzw_line = lzw::compress_string(line);
 		}
 
 		input.close();

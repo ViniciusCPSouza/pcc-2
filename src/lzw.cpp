@@ -3,44 +3,26 @@
 
 namespace lzw
 {
-	std::vector<int> compress_string(std::string input)
+	// ###########################
+	// ### CompressedInputFile ###
+	// ###########################
+	CompressedInputFile::CompressedInputFile(std::string filename)
 	{
-		std::vector<int> output;
-		int N = input.length();
-
-		// empty string -> empty compression
-		if (N == 0) return output;
-
-		std::map<std::string, int> dict;
-		char current_char;
-		std::string phrase = std::string(input, 0, 1);;
-		std::string phrase_sum;
-		int code = 256;
-
-		for (int c = 1; c < N; c++)
-		{
-			current_char = input[c];
-			// the new phrase exists in the dict
-			if (dict.find(phrase + current_char) != dict.end())
-			{
-				phrase += current_char;
-			}
-			// the new phrase still does not exist 
-			else
-			{
-				output.push_back(phrase.length() > 1 ? dict[phrase] : phrase[0]);
-				dict[phrase + current_char] = code;
-				code++;
-				phrase = std::string(1, current_char);
-			}
-		}
-
-		output.push_back(phrase.length() > 1 ? dict[phrase] : phrase[0]);
-
-		return output;
+		// TODO
 	}
 
-	std::string decompress_code(std::vector<int> input)
+	std::string CompressedInputFile::read_line()
+	{
+		// TODO
+		return "";
+	}
+
+	void CompressedInputFile::close()
+	{
+		// TODO
+	}
+
+	std::string CompressedInputFile::decompress_code(std::vector<int> input)
 	{
 		std::ostringstream output;
 		int N = input.size();
@@ -85,5 +67,61 @@ namespace lzw
 		}
 
 		return output.str();
+	}
+
+	// ###########################
+	// ### CompressedOutupFile ###
+	// ###########################
+
+	CompressedOutputFile::CompressedOutputFile(std::string filename)
+	{
+		// TODO
+	}
+
+	void CompressedOutputFile::write_line(std::string)
+	{
+		// TODO
+	}
+
+	void CompressedOutputFile::close()
+	{
+		// TOOD
+	}
+
+	std::vector<int> CompressedOutputFile::compress_string(std::string input)
+	{
+		std::vector<int> output;
+		int N = input.length();
+
+		// empty string -> empty compression
+		if (N == 0) return output;
+
+		std::map<std::string, int> dict;
+		char current_char;
+		std::string phrase = std::string(input, 0, 1);;
+		std::string phrase_sum;
+		int code = 256;
+
+		for (int c = 1; c < N; c++)
+		{
+			current_char = input[c];
+			// the new phrase exists in the dict
+			if (dict.find(phrase + current_char) != dict.end())
+			{
+				phrase += current_char;
+			}
+			// the new phrase still does not exist 
+			else
+			{
+				output.push_back(phrase.length() > 1 ? dict[phrase] : phrase[0]);
+				dict[phrase + current_char] = code;
+				code++;
+				phrase = std::string(1, current_char);
+			}
+		}
+
+		output.push_back(phrase.length() > 1 ? dict[phrase] : phrase[0]);
+
+		return output;
 	}
 }
