@@ -8,7 +8,8 @@ namespace lzw
 	// ###########################
 	CompressedInputFile::CompressedInputFile(std::string filename)
 	{
-		// TODO
+		this->stream = std::ifstream(filename, std::ios_base::binary);
+		if (this->stream.fail()) throw std::runtime_error("LZW Decompression: Could not open input file!");
 	}
 
 	std::string CompressedInputFile::read_line()
@@ -17,9 +18,15 @@ namespace lzw
 		return "";
 	}
 
-	void CompressedInputFile::close()
+	bool CompressedInputFile::has_lines()
 	{
 		// TODO
+		return false;
+	}
+
+	void CompressedInputFile::close()
+	{
+		this->stream.close();
 	}
 
 	std::string CompressedInputFile::decompress_code(std::vector<int> input)
@@ -75,17 +82,19 @@ namespace lzw
 
 	CompressedOutputFile::CompressedOutputFile(std::string filename)
 	{
-		// TODO
+		this->stream = std::ofstream(filename, std::ios_base::binary);
+		if (this->stream.fail()) throw std::runtime_error("LZW Compression: Could not open output file!");
 	}
 
-	void CompressedOutputFile::write_line(std::string)
+	void CompressedOutputFile::write_line(std::string line)
 	{
 		// TODO
 	}
 
 	void CompressedOutputFile::close()
 	{
-		// TOOD
+		this->stream.flush();
+		this->stream.close();
 	}
 
 	std::vector<int> CompressedOutputFile::compress_string(std::string input)

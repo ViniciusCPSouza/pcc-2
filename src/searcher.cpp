@@ -9,14 +9,17 @@ namespace searcher
 	{
 		std::map<int, LineResult> occurrences;
 
-		std::ifstream input(index_file);
+		// std::ifstream input(index_file);
+		lzw::CompressedInputFile input(index_file);
 		std::string line;
 
 		LineType lineType = SUFFIX_ARRAY;
 		std::vector<int> sa;
 		int current_line = -1;
-		while (std::getline(input, line))
+		// while (std::getline(input, line))
+		while (input.has_lines())
 		{
+			line = input.read_line();
 			if (lineType == SUFFIX_ARRAY)
 			{
 				sa = get_suffix_array(line);

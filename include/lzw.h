@@ -19,6 +19,7 @@ namespace lzw
 		public:
 			CompressedInputFile(std::string filename);
 			std::string read_line();
+			bool has_lines();
 			void close();
 	};
 
@@ -30,7 +31,7 @@ namespace lzw
 
 		public:
 			CompressedOutputFile(std::string filename);
-			void write_line(std::string);
+			void write_line(std::string line);
 			void close();
 	};
 }
