@@ -14,14 +14,24 @@ namespace lzw
 
 	std::string CompressedInputFile::read_line()
 	{
-		// TODO
-		return "";
+		std::vector<int> encoded;
+		int code_count = 0;  // uint32_t
+
+		this->stream.read((char*)&code_count, sizeof(code_count));
+
+		int code = 0;
+		for (int i = 0; i < code_count; i++)
+		{
+			this->stream.read((char*)&code, sizeof(code));
+			encoded.push_back(code);
+		}
+
+		return this->decompress_code(encoded);
 	}
 
 	bool CompressedInputFile::has_lines()
 	{
-		// TODO
-		return false;
+		return !this->stream.eof();
 	}
 
 	void CompressedInputFile::close()
@@ -86,9 +96,20 @@ namespace lzw
 		if (this->stream.fail()) throw std::runtime_error("LZW Compression: Could not open output file!");
 	}
 
+	// TODO: too much space
 	void CompressedOutputFile::write_line(std::string line)
 	{
-		// TODO
+		std::vector<int> compressed = this->compress_string(line);
+		int code_count = compressed.size();
+
+		// writing the size of the list, so we can recover it later
+		this->stream.write((char*)&code_count, sizeof(code_count));
+
+		// writing the actual data
+		for (std::vector<int>::iterator it = compressed.begin(); it != compressed.end(); it++)
+		{
+			this->stream.write((char*)&(*it), sizeof(*it));
+		}
 	}
 
 	void CompressedOutputFile::close()

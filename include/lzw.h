@@ -2,6 +2,8 @@
 #define LZW_H
 
 #include <fstream>
+#include <iostream>
+#include <iterator>
 #include <map>
 #include <sstream>
 #include <string>

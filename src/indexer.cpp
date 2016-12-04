@@ -15,24 +15,17 @@ namespace indexer
 
 		std::ifstream input(filename);
 		lzw::CompressedOutputFile output(idx_filename);
-		// std::ofstream output(idx_filename);
 
 		if(input.fail())
 		{
 	    throw std::runtime_error("Can't index non existing input!");
 	  }
-	 //  if(output.fail())
-		// {
-	 //    throw std::runtime_error("Can't write to idx file!");
-	 //  }
 
 		while (std::getline(input, line))
 		{
 		  std::vector<int> sa = suffix_array::getSuffixArray(line);
 		  output.write_line(get_sa_string(sa));
 		  output.write_line(line);
-		  // output << get_sa_string(sa) << std::endl;
-		  // output << line << std::endl;
 		}
 
 		input.close();
