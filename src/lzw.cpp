@@ -14,12 +14,12 @@ namespace lzw
 
 	std::string CompressedInputFile::read_line()
 	{
-		std::vector<int> encoded;
-		int code_count = 0;  // uint32_t
+		std::vector<uint16_t> encoded;
+		int code_count = 0;
 
 		this->stream.read((char*)&code_count, sizeof(code_count));
 
-		int code = 0;
+		uint16_t code = 0;
 		for (int i = 0; i < code_count; i++)
 		{
 			this->stream.read((char*)&code, sizeof(code));
@@ -27,6 +27,23 @@ namespace lzw
 		}
 
 		return this->decompress_code(encoded);
+	}
+
+	std::vector<int> CompressedInputFile::read_suffix_array()
+	{
+		std::vector<int> sa;
+		int count = 0;
+
+		this->stream.read((char*)&count, sizeof(count));
+
+		int item = 0;
+		for (int i = 0; i < count; i++)
+		{
+			this->stream.read((char*)&item, sizeof(item));
+			sa.push_back(item);
+		}
+
+		return sa;
 	}
 
 	bool CompressedInputFile::has_lines()
@@ -39,7 +56,7 @@ namespace lzw
 		this->stream.close();
 	}
 
-	std::string CompressedInputFile::decompress_code(std::vector<int> input)
+	std::string CompressedInputFile::decompress_code(std::vector<uint16_t> input)
 	{
 		std::ostringstream output;
 		int N = input.size();
@@ -47,13 +64,13 @@ namespace lzw
 		// empty input -> empty decompressed string
 		if (N == 0) return "";
 
-		std::map<int, std::string> dict;
+		std::map<uint16_t, std::string> dict;
 		char current_char = (char) input[0];
 		std::string old_phrase = std::string(1, current_char);
 		std::string phrase;
 		output << current_char;
-		int code = 256;
-		int current_code;
+		uint16_t code = 256;
+		uint16_t current_code;
 
 		for (int c = 1; c < N; c++)
 		{
@@ -99,14 +116,27 @@ namespace lzw
 	// TODO: too much space
 	void CompressedOutputFile::write_line(std::string line)
 	{
-		std::vector<int> compressed = this->compress_string(line);
+		std::vector<uint16_t> compressed = this->compress_string(line);
 		int code_count = compressed.size();
 
 		// writing the size of the list, so we can recover it later
 		this->stream.write((char*)&code_count, sizeof(code_count));
 
 		// writing the actual data
-		for (std::vector<int>::iterator it = compressed.begin(); it != compressed.end(); it++)
+		for (std::vector<uint16_t>::iterator it = compressed.begin(); it != compressed.end(); it++)
+		{
+			this->stream.write((char*)&(*it), sizeof(*it));
+		}
+	}
+
+	void CompressedOutputFile::write_suffix_array(std::vector<int> sa)
+	{
+		// writing the size of the list, so we can recover it later
+		int count = sa.size();
+		this->stream.write((char*)&count, sizeof(count));
+
+		// writing the actual data
+		for (std::vector<int>::iterator it = sa.begin(); it != sa.end(); it++)
 		{
 			this->stream.write((char*)&(*it), sizeof(*it));
 		}
@@ -118,19 +148,19 @@ namespace lzw
 		this->stream.close();
 	}
 
-	std::vector<int> CompressedOutputFile::compress_string(std::string input)
+	std::vector<uint16_t> CompressedOutputFile::compress_string(std::string input)
 	{
-		std::vector<int> output;
+		std::vector<uint16_t> output;
 		int N = input.length();
 
 		// empty string -> empty compression
 		if (N == 0) return output;
 
-		std::map<std::string, int> dict;
+		std::map<std::string, uint16_t> dict;
 		char current_char;
 		std::string phrase = std::string(input, 0, 1);;
 		std::string phrase_sum;
-		int code = 256;
+		uint16_t code = 256;
 
 		for (int c = 1; c < N; c++)
 		{

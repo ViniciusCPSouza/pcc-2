@@ -17,14 +17,14 @@ namespace searcher
 		int current_line = -1;
 		while (input.has_lines())
 		{
-			line = input.read_line();
 			if (lineType == SUFFIX_ARRAY)
 			{
-				sa = get_suffix_array(line);
+				sa = input.read_suffix_array();
 				lineType = TEXT_LINE;
 			}
 			else
 			{
+				line = input.read_line();
 				current_line++;
 				lineType = SUFFIX_ARRAY;
 
