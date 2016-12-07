@@ -1,6 +1,7 @@
 #ifndef LZW_H
 #define LZW_H
 
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -16,11 +17,12 @@ namespace lzw
 	{
 		private:
 			std::ifstream stream;
-			std::string decompress_code(std::vector<int> input);
+			std::string decompress_code(std::vector<uint16_t> input);
 
 		public:
 			CompressedInputFile(std::string filename);
 			std::string read_line();
+			std::vector<int> read_suffix_array();
 			bool has_lines();
 			void close();
 	};
@@ -29,11 +31,12 @@ namespace lzw
 	{
 		private:
 			std::ofstream stream;
-			std::vector<int> compress_string(std::string input);
+			std::vector<uint16_t> compress_string(std::string input);
 
 		public:
 			CompressedOutputFile(std::string filename);
 			void write_line(std::string line);
+			void write_suffix_array(std::vector<int> sa);
 			void close();
 	};
 }
