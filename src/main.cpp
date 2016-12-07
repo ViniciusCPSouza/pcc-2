@@ -70,9 +70,9 @@ int main(int argc, char** argv)
 	// Help
 	if (options[HELP] || argc == 0)
 	{
-		 std::cout << "USAGE: ipmt (search [options] pattern index_file | index text_file)" << std::endl;
-	 option::printUsage(std::cout, usage);
-	 return 0;
+	  std::cout << "USAGE: ipmt (search [options] pattern index_file | index text_file)" << std::endl;
+	  option::printUsage(std::cout, usage);
+	  return 0;
 	}
 
 	if (options[PATTERN_FILE]) pattern_file = options[PATTERN_FILE].arg;
@@ -157,7 +157,6 @@ int main(int argc, char** argv)
 	{
 		std::map<int, searcher::LineResult> occurrences = searcher::search_index(input_file, patterns);
 
-		// TODO: CONSIDER COUNT
 		if (count)
 		{
 			int sum = 0;

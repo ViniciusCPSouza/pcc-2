@@ -7,6 +7,8 @@
 #include <sstream>
 #include <vector>
 
+#include <lzw.h>
+
 
 namespace searcher
 {
