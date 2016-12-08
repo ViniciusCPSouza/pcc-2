@@ -5,10 +5,11 @@ namespace searcher
 {
 	enum LineType {SUFFIX_ARRAY, TEXT_LINE};
 
-	std::map<int, LineResult> search_index(std::string index_file, std::vector<std::string> patterns)
+	std::map<int, LineResult> search_index(std::string index_file, std::vector<std::string> patterns, bool report)
 	{
 		std::map<int, LineResult> occurrences;
-
+		std::chrono::high_resolution_clock::time_point report_start;
+		std::chrono::high_resolution_clock::time_point report_end;
 		lzw::CompressedInputFile input(index_file);
 		std::string line;
 
@@ -31,11 +32,19 @@ namespace searcher
 				occurrences[current_line] = LineResult();
 				occurrences[current_line].occurrences = std::vector<int>();
 				std::vector<int> results;
+
+				if (report) report_start = std::chrono::high_resolution_clock::now();
 				for (std::vector<std::string>::iterator it = patterns.begin(); it != patterns.end(); it++)
 				{
 					results = search(line, sa, *it);
 					occurrences[current_line].occurrences.insert(occurrences[current_line].occurrences.end(), results.begin(), results.end());
 				}
+				if (report)
+				{
+					report_end = std::chrono::high_resolution_clock::now();
+					occurrences[current_line].runtime = std::chrono::duration_cast<std::chrono::nanoseconds>(report_end - report_start);
+				}
+
 				if (occurrences[current_line].occurrences.size() > 0) occurrences[current_line].line = line;
 			}
 		}
