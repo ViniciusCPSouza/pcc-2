@@ -15,7 +15,6 @@ namespace suffix_array
 		utils::step_entry tuple_array [N];
 
 		// initialize the sort index
-		/*sort_index[0] = std::vector<int>(N, 0);*/
 		for (int i = 0; i < N; i++)
 		{
 			sort_index[0][i] = text[i] - 'a';
@@ -35,7 +34,6 @@ namespace suffix_array
 			// sort the new tuples
 			quicksort::sort(tuple_array, N);
 
-			/*sort_index[step] = std::vector<int>(N, 0);*/
 			for (int i = 0; i < N; i++)
 			{
 				if ((i > 0) && (tuple_array[i].tuple[0] == tuple_array[i - 1].tuple[0]) &&
