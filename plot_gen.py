@@ -28,14 +28,14 @@ def main(args):
 
     # indexing
     indexing_data = {}
-    indexing_layout = go.Layout(title="Indexing", width=800, height=640,
-                                xaxis=dict(title='Tamanho do Texto (characteres)'),
+    indexing_layout = go.Layout(title="Indexação", width=800, height=640,
+                                xaxis=dict(title='Comprimento do Texto (characteres)'),
                                 yaxis=dict(title='Tempo de Execução (milisegundos)'))
 
     # searching
     searching_data = {}
-    searching_layout = go.Layout(title="Searching", width=800, height=640,
-                                 xaxis=dict(title='Tamanho do Texto (characteres)'),
+    searching_layout = go.Layout(title="Busca", width=800, height=640,
+                                 xaxis=dict(title='Comprimento do Texto (characteres)'),
                                  yaxis=dict(title='Tempo de Execução (milisegundos)'))
 
     for dataset in os.listdir(input_folder):
