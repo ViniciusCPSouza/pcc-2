@@ -1,6 +1,7 @@
 #ifndef INDEXER_H
 #define INDEXER_H
 
+#include <chrono>
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -11,7 +12,7 @@
 
 namespace indexer
 {
-	void create_index(std::string filename);
+	std::vector<std::chrono::nanoseconds> create_index(std::string filename, bool report);
 }
 
 #endif

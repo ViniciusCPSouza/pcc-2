@@ -1,6 +1,7 @@
 #include <suffix_array.h>
 #include <utils.h>
 #include <quicksort.h>
+#include <iostream>
 
 #define MAXN 65536
 #define MAXLG 17

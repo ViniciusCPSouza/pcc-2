@@ -54,10 +54,7 @@ int main(int argc, char** argv)
 	std::string pattern = "";
 	std::string input_file = "";
 
-	std::vector<std::string> runtimes;
-	std::ostringstream report_line;
-	std::chrono::high_resolution_clock::time_point report_start;
-	std::chrono::high_resolution_clock::time_point report_end;
+	std::vector<std::chrono::nanoseconds> runtimes;
 
 	argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
 	option::Stats  stats(usage, argc, argv);
@@ -139,23 +136,13 @@ int main(int argc, char** argv)
 		patterns.push_back(pattern);
 	}
 
-	// std::cout << "Operation: " << operation << std::endl;
-	// std::cout << "Count: " << count << std::endl;
-	// std::cout << "Report: " << report << std::endl;
-	// std::cout << "Patterns: " << std::endl;
-	// for(std::vector<std::string>::iterator it = patterns.begin(); it != patterns.end(); it++)
-	// {
-	// 	std::cout << *it << std::endl;
-	// }
-	// std::cout << "Input File: " << input_file << std::endl;
-
 	if (operation == INDEX_OP)
 	{
-		indexer::create_index(input_file);
+		runtimes = indexer::create_index(input_file, report);
 	}
 	else if (operation == SEARCH_OP)
 	{
-		std::map<int, searcher::LineResult> occurrences = searcher::search_index(input_file, patterns);
+		std::map<int, searcher::LineResult> occurrences = searcher::search_index(input_file, patterns, report);
 
 		if (count)
 		{
@@ -163,6 +150,7 @@ int main(int argc, char** argv)
 			for(std::map<int, searcher::LineResult>::iterator it = occurrences.begin(); it != occurrences.end(); it++)
 			{
 				sum += it->second.occurrences.size();
+				if (report) runtimes.push_back(it->second.runtime);
 			}
 			std::cout << sum << std::endl;
 		}
@@ -171,8 +159,22 @@ int main(int argc, char** argv)
 			for(std::map<int, searcher::LineResult>::iterator it = occurrences.begin(); it != occurrences.end(); it++)
 			{
 				if (it->second.occurrences.size() > 0) std::cout << it->second.line << std::endl;
+				if (report) runtimes.push_back(it->second.runtime);
 			}	
 		}
+	}
+
+	if (report)
+	{
+		std::ofstream out("runtime.csv");
+		out << "runtime" << std::endl;
+
+		for (std::vector<std::chrono::nanoseconds>::iterator it = runtimes.begin(); it != runtimes.end(); it++)
+		{
+			out << (*it).count() << std::endl;
+		}
+
+		out.close();
 	}
 	
 	return 0;
