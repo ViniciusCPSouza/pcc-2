@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 	// Help
 	if (options[HELP] || argc == 0)
 	{
-	  std::cout << "USAGE: ipmt (search [options] pattern index_file | index text_file)" << std::endl;
+	  std::cout << "USAGE: ipmt [options] (search pattern index_file | index text_file)" << std::endl;
 	  option::printUsage(std::cout, usage);
 	  return 0;
 	}
