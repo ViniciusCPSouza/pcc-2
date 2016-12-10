@@ -24,4 +24,4 @@ include_directories("libs")
 
 
 # --------------- INCLUDING EXECUTABLES ---------------
-add_executable (${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES})
